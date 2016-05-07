@@ -4,3 +4,9 @@ cran.all.1400
 
 # pycharm specific files
 .idea/
+
+# indexed files
+*_index*
+
+# pycache
+__pycache__/
