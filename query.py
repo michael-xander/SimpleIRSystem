@@ -13,7 +13,7 @@ import parameters
 
 # check parameter for collection name
 if len(sys.argv)<3:
-   print ("Syntax: index.py <collection> <query>")
+   print ("Syntax: query.py <collection> <query>")
    exit(0)
  
 # construct collection and query
