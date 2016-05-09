@@ -11,6 +11,49 @@ import porter
 
 import parameters
 
+# searchs index for provided search words and returns the accumulated dictionary
+def search_index(search_words):
+    accumulator = {}
+    for word in search_words:
+        if word != '':
+            if not os.path.isfile(collection+"_index/"+word):
+                continue
+            f = open(collection+"_index/"+word, "r")
+            lines = f.readlines()
+            idf = 1
+            if parameters.use_idf:
+                df = len(lines)
+                idf = 1/df
+                if parameters.log_idf:
+                    idf = math.log(1 + N/df)
+            for line in lines:
+                mo = re.match(r'([0-9]+)\:([0-9\.]+)', line)
+                if mo:
+                    file_id = mo.group(1)
+                    tf = float (mo.group(2))
+                    if not file_id in accumulator:
+                        accumulator[file_id] = 0
+                    if parameters.log_tf:
+                        tf = (1 + math.log(tf))
+                    accumulator[file_id] += (tf * idf)
+            f.close()
+
+    return accumulator
+
+# stems the provided term
+def stem_term(term):
+    if term != '':
+        term = p.stem(term, 0, len(term)-1)
+    return term
+
+# stems the list of provided terms
+def stem_terms(terms):
+    stemmmed_terms = []
+    for i in range(len(terms)):
+        stemmmed_terms.append(stem_term(terms[i]))
+
+    return stemmmed_terms
+
 # check parameter for collection name
 if len(sys.argv)<3:
    print ("Syntax: query.py <collection> <query>")
@@ -31,8 +74,7 @@ query = re.sub (r'[^ a-zA-Z0-9]', ' ', query)
 query = re.sub (r'\s+', ' ', query)
 query_words = query.split (' ')
 
-# create accumulators and other data structures
-accum = {}
+# create data structures
 filenames = []
 p = porter.PorterStemmer ()
 
@@ -47,32 +89,11 @@ f = open (collection+"_index_len", "r")
 lengths = f.readlines ()
 f.close ()
 
-# get index for each term and calculate similarities using accumulators
-for term in query_words:
-    if term != '':
-        if parameters.stemming:
-            term = p.stem (term, 0, len(term)-1)
-        if not os.path.isfile (collection+"_index/"+term):
-           continue
-        f = open (collection+"_index/"+term, "r")
-        lines = f.readlines ()
-        idf = 1
-        if parameters.use_idf:
-           df = len(lines)
-           idf = 1/df
-           if parameters.log_idf:
-              idf = math.log (1 + N/df)
-        for line in lines:
-            mo = re.match (r'([0-9]+)\:([0-9\.]+)', line)
-            if mo:
-                file_id = mo.group(1)
-                tf = float (mo.group(2))
-                if not file_id in accum:
-                    accum[file_id] = 0
-                if parameters.log_tf:
-                    tf = (1 + math.log (tf))
-                accum[file_id] += (tf * idf)
-        f.close()
+if parameters.stemming:
+    query_words = stem_terms(query_words)
+
+# create accumulator
+accum = search_index(query_words)
 
 # parse lengths data and divide by |N| and get titles
 for l in lengths:
@@ -90,3 +111,4 @@ for l in lengths:
 result = sorted (accum, key=accum.__getitem__, reverse=True)
 for i in range (min (len (result), 10)):
    print ("{0:10.8f} {1:5} {2}".format (accum[result[i]], result[i], titles[result[i]]))
+
