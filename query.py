@@ -41,8 +41,7 @@ def search_index(search_words, collection, N):
     return accumulator
 
 # stems the provided term
-def stem_term(term):
-    p = porter.PorterStemmer()
+def stem_term(term, p):
     if term != '':
         term = p.stem(term, 0, len(term)-1)
     return term
@@ -50,10 +49,36 @@ def stem_term(term):
 # stems the list of provided terms
 def stem_terms(terms):
     stemmmed_terms = []
+    p = porter.PorterStemmer()
     for i in range(len(terms)):
-        stemmmed_terms.append(stem_term(terms[i]))
+        stemmmed_terms.append(stem_term(terms[i],p))
 
     return stemmmed_terms
+
+# carries out the required query search
+def do_query_search(query_words, collection_name, collection_size, collection_files_data):
+    # create accumulator
+    accum = search_index(query_words, collection_name, collection_size)
+
+    # get document lengths and titles
+    titles = {}
+    lengths = {}
+    for file_data in collection_files_data:
+        mo = re.match(r'([0-9]+)\:([0-9\.]+)\:(.+)', file_data)
+        if mo:
+            document_id = mo.group(1)
+            length = eval(mo.group(2))
+            title = mo.group(3)
+            if document_id in accum:
+                titles[document_id] = title
+                lengths[document_id] = length
+
+    # normalise if option is true
+    if parameters.normalization:
+        for document_id in accum:
+            accum[document_id] = accum[document_id] / lengths[document_id]
+
+    return accum, titles, lengths
 
 def main():
     # check parameter for collection name
@@ -76,39 +101,19 @@ def main():
     query = re.sub(r'\s+', ' ', query)
     query_words = query.split(' ')
 
+    if parameters.stemming:
+        query_words = stem_terms(query_words)
+
     # get N
     f = open(collection + "_index_N", "r")
     N = eval(f.read())
     f.close()
 
-    # get document lengths/titles
-    titles = {}
-    lengths = {}
     f = open(collection + "_index_len", "r")
     file_data_list = f.readlines()
     f.close()
 
-    if parameters.stemming:
-        query_words = stem_terms(query_words)
-
-    # create accumulator
-    accum = search_index(query_words, collection, N)
-
-    # parse lengths data and divide by |N| and get titles
-    for file_data in file_data_list:
-        mo = re.match(r'([0-9]+)\:([0-9\.]+)\:(.+)', file_data)
-        if mo:
-            document_id = mo.group(1)
-            length = eval(mo.group(2))
-            title = mo.group(3)
-            if document_id in accum:
-                titles[document_id] = title
-                lengths[document_id] = length
-
-    # normalise if option is true
-    if parameters.normalization:
-        for document_id in accum:
-            accum[document_id] = accum[document_id] / lengths[document_id]
+    accum, titles, lengths = do_query_search(query_words, collection, N, file_data_list)
 
     # rank the results
     result = sorted(accum, key=accum.__getitem__, reverse=True)
