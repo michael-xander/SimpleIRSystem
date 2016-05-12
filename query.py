@@ -169,12 +169,20 @@ def main():
 
         # rank the words found in the documents
         ranked_words = sorted(word_stats, key=word_stats.__getitem__, reverse=True)
+        print("Old query words:")
+        print(query_words)
         indicative_number = 20
         for i in range(min(len(ranked_words), indicative_number)):
             if not ranked_words[i] in query_words:
                 query_words.append(ranked_words[i])
 
         # do search again with new query words
+        print("New query words:")
+        print(query_words)
+        accum, titles, lengths = do_query_search(query_words, collection, N, file_data_list)
+
+        # rank the results
+        result = sorted(accum, key=accum.__getitem__, reverse=True)
 
     # print the ranked results
     for i in range(min(len(result), 10)):
