@@ -157,7 +157,10 @@ def main():
                     tf = (1 + math.log(tf))
                 if not word in word_stats:
                     word_stats[word] = 0
-                word_stats[word] += (tf * idf)
+                stat = (tf * idf)
+                if parameters.normalization:
+                    stat = stat / lengths[document_id]
+                word_stats[word] += stat
 
         # rank the words found in the documents
         ranked_words = sorted(word_stats, key=word_stats.__getitem__, reverse=True)
