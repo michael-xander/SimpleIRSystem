@@ -12,7 +12,7 @@ import porter
 import parameters
 
 # searchs index for provided search words and returns the accumulated dictionary
-def search_index(search_words):
+def search_index(search_words, collection, N):
     accumulator = {}
     for word in search_words:
         if word != '':
@@ -42,6 +42,7 @@ def search_index(search_words):
 
 # stems the provided term
 def stem_term(term):
+    p = porter.PorterStemmer()
     if term != '':
         term = p.stem(term, 0, len(term)-1)
     return term
@@ -54,61 +55,64 @@ def stem_terms(terms):
 
     return stemmmed_terms
 
-# check parameter for collection name
-if len(sys.argv)<3:
-   print ("Syntax: query.py <collection> <query>")
-   exit(0)
- 
-# construct collection and query
-collection = sys.argv[1]
-query = ''
-arg_index = 2
-while arg_index < len(sys.argv):
-   query += sys.argv[arg_index] + ' '
-   arg_index += 1
+def main():
+    # check parameter for collection name
+    if len(sys.argv) < 3:
+        print("Syntax: query.py <collection> <query>")
+        exit(0)
 
-# clean query
-if parameters.case_folding:
-   query = query.lower ()
-query = re.sub (r'[^ a-zA-Z0-9]', ' ', query)
-query = re.sub (r'\s+', ' ', query)
-query_words = query.split (' ')
+    # construct collection and query
+    collection = sys.argv[1]
+    query = ''
+    arg_index = 2
+    while arg_index < len(sys.argv):
+        query += sys.argv[arg_index] + ' '
+        arg_index += 1
 
-# create data structures
-filenames = []
-p = porter.PorterStemmer ()
+    # clean query
+    if parameters.case_folding:
+        query = query.lower()
+    query = re.sub(r'[^ a-zA-Z0-9]', ' ', query)
+    query = re.sub(r'\s+', ' ', query)
+    query_words = query.split(' ')
 
-# get N
-f = open (collection+"_index_N", "r")
-N = eval (f.read ())
-f.close ()
+    # create data structures
+    filenames = []
 
-# get document lengths/titles
-titles = {}
-f = open (collection+"_index_len", "r")
-lengths = f.readlines ()
-f.close ()
+    # get N
+    f = open(collection + "_index_N", "r")
+    N = eval(f.read())
+    f.close()
 
-if parameters.stemming:
-    query_words = stem_terms(query_words)
+    # get document lengths/titles
+    titles = {}
+    f = open(collection + "_index_len", "r")
+    lengths = f.readlines()
+    f.close()
 
-# create accumulator
-accum = search_index(query_words)
+    if parameters.stemming:
+        query_words = stem_terms(query_words)
 
-# parse lengths data and divide by |N| and get titles
-for l in lengths:
-   mo = re.match (r'([0-9]+)\:([0-9\.]+)\:(.+)', l)
-   if mo:
-      document_id = mo.group (1)
-      length = eval (mo.group (2))
-      title = mo.group (3)
-      if document_id in accum:
-         if parameters.normalization:
-            accum[document_id] = accum[document_id] / length
-         titles[document_id] = title
+    # create accumulator
+    accum = search_index(query_words, collection, N)
 
-# print top ten results
-result = sorted (accum, key=accum.__getitem__, reverse=True)
-for i in range (min (len (result), 10)):
-   print ("{0:10.8f} {1:5} {2}".format (accum[result[i]], result[i], titles[result[i]]))
+    # parse lengths data and divide by |N| and get titles
+    for l in lengths:
+        mo = re.match(r'([0-9]+)\:([0-9\.]+)\:(.+)', l)
+        if mo:
+            document_id = mo.group(1)
+            length = eval(mo.group(2))
+            title = mo.group(3)
+            if document_id in accum:
+                if parameters.normalization:
+                    accum[document_id] = accum[document_id] / length
+                titles[document_id] = title
 
+    # print top ten results
+    result = sorted(accum, key=accum.__getitem__, reverse=True)
+    for i in range(min(len(result), 10)):
+        print("{0:10.8f} {1:5} {2}".format(accum[result[i]], result[i], titles[result[i]]))
+
+
+# run the main method
+main()
