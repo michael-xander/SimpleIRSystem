@@ -76,9 +76,6 @@ def main():
     query = re.sub(r'\s+', ' ', query)
     query_words = query.split(' ')
 
-    # create data structures
-    filenames = []
-
     # get N
     f = open(collection + "_index_N", "r")
     N = eval(f.read())
@@ -86,8 +83,9 @@ def main():
 
     # get document lengths/titles
     titles = {}
+    lengths = {}
     f = open(collection + "_index_len", "r")
-    lengths = f.readlines()
+    file_data_list = f.readlines()
     f.close()
 
     if parameters.stemming:
@@ -97,18 +95,22 @@ def main():
     accum = search_index(query_words, collection, N)
 
     # parse lengths data and divide by |N| and get titles
-    for l in lengths:
-        mo = re.match(r'([0-9]+)\:([0-9\.]+)\:(.+)', l)
+    for file_data in file_data_list:
+        mo = re.match(r'([0-9]+)\:([0-9\.]+)\:(.+)', file_data)
         if mo:
             document_id = mo.group(1)
             length = eval(mo.group(2))
             title = mo.group(3)
             if document_id in accum:
-                if parameters.normalization:
-                    accum[document_id] = accum[document_id] / length
                 titles[document_id] = title
+                lengths[document_id] = length
 
-    # print top ten results
+    # normalise if option is true
+    if parameters.normalization:
+        for document_id in accum:
+            accum[document_id] = accum[document_id] / lengths[document_id]
+
+    # rank the results
     result = sorted(accum, key=accum.__getitem__, reverse=True)
 
     if parameters.use_blind_relevance_feedback:
@@ -127,6 +129,7 @@ def main():
         for document_id in relevant_document_ids:
             f = open(collection + "_index_stem_count/"+ document_id, "r")
             lines = f.readlines()
+            f.close()
             for line in lines:
                 mo = re.match(r'([a-z0-9]+)\:([0-9\.]+)', line)
                 if mo:
@@ -164,9 +167,10 @@ def main():
                 query_words.append(ranked_words[i])
 
         # do search again with new query words
-    else:
-        for i in range(min(len(result), 10)):
-            print("{0:10.8f} {1:5} {2}".format(accum[result[i]], result[i], titles[result[i]]))
+
+    # print the ranked results
+    for i in range(min(len(result), 10)):
+        print("{0:10.8f} {1:5} {2}".format(accum[result[i]], result[i], titles[result[i]]))
 
 
 # run the main method
