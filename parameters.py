@@ -8,4 +8,4 @@ case_folding = True
 log_tf = True
 use_idf = True
 log_idf = True
-use_blind_relevance_feedback = False
+use_blind_relevance_feedback = True
