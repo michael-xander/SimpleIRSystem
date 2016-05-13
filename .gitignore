@@ -1,6 +1,7 @@
+# pycharm specific files
+.idea
+# python complied files
+__pycache__
 
-# watch only README and python files
-*
-!*.py
-!README.md
-!stop-word-list.txt
+# files generated on indexing
+*_index_*
