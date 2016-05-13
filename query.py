@@ -117,6 +117,13 @@ def main():
     # get list of stop words
     stop_words = readin_stop_words()
 
+    if parameters.remove_stop_words:
+        temp_arr = []
+        for word in query_words:
+            if not word in stop_words:
+                temp_arr.append(word)
+        query_words = temp_arr
+
     # get N
     f = open(collection + "_index_N", "r")
     N = eval(f.read())
