@@ -55,6 +55,16 @@ def stem_terms(terms):
 
     return stemmmed_terms
 
+# read in the stop words
+def readin_stop_words():
+    stop_words = []
+    f = open("stop-word-list.txt", "r")
+    lines = f.readlines()
+    f.close()
+    for line in lines:
+        stop_words.append(line)
+    return stop_words
+
 # carries out the required query search
 def do_query_search(query_words, collection_name, collection_size, collection_files_data):
     # create accumulator
@@ -104,6 +114,9 @@ def main():
     if parameters.stemming:
         query_words = stem_terms(query_words)
 
+    # get list of stop words
+    stop_words = readin_stop_words()
+
     # get N
     f = open(collection + "_index_N", "r")
     N = eval(f.read())
@@ -152,6 +165,9 @@ def main():
         # data structure to contain stats on words
         word_stats = {}
         for word in words_df_counter:
+            if parameters.remove_stop_words:
+                if word in stop_words:
+                    continue
             df = words_df_counter[word]
             idf = 1/df
             if parameters.log_idf:
