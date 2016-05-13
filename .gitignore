@@ -5,3 +5,6 @@ __pycache__
 
 # files generated on indexing
 *_index*
+
+# files generated on generating collections
+*_collection*
