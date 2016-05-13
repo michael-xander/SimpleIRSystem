@@ -62,7 +62,7 @@ def readin_stop_words():
     lines = f.readlines()
     f.close()
     for line in lines:
-        stop_words.append(line)
+        stop_words.append(line.rstrip())
     return stop_words
 
 # carries out the required query search
@@ -188,7 +188,7 @@ def main():
         print("Old query words:")
         print(query_words)
         indicative_number = 20
-        for i in range(min(len(ranked_words), indicative_number)):
+        for i in range(min(len(ranked_words), (indicative_number + len(query_words)))):
             if not ranked_words[i] in query_words:
                 query_words.append(ranked_words[i])
 
