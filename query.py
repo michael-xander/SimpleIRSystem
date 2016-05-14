@@ -129,7 +129,7 @@ def query(collection_name, given_query):
     result = sorted(accum, key=accum.__getitem__, reverse=True)
 
     if parameters.use_blind_relevance_feedback:
-        print("Utilising blind relevance feedback")
+        #print("Utilising blind relevance feedback")
 
         # obtain the IDs of the current top k documents
         k = parameters.number_top_k_documents
@@ -182,24 +182,24 @@ def query(collection_name, given_query):
 
         # rank the words found in the documents
         ranked_words = sorted(word_stats, key=word_stats.__getitem__, reverse=True)
-        print("Old query words:")
-        print(query_words)
+        #print("Old query words:")
+        #print(query_words)
         indicative_number = parameters.number_indicative_terms
         for i in range(min(len(ranked_words), (indicative_number + len(query_words)))):
             if not ranked_words[i] in query_words:
                 query_words.append(ranked_words[i])
 
         # do search again with new query words
-        print("New query words:")
-        print(query_words)
+        #print("New query words:")
+        #print(query_words)
         accum, titles, lengths = do_query_search(query_words, collection, N, file_data_list)
 
         # rank the results
         result = sorted(accum, key=accum.__getitem__, reverse=True)
 
     # print the ranked results
-    for i in range(min(len(result), 10)):
-        print("{0:10.8f} {1:5} {2}".format(accum[result[i]], result[i], titles[result[i]]))
+    #for i in range(min(len(result), 10)):
+        #print("{0:10.8f} {1:5} {2}".format(accum[result[i]], result[i], titles[result[i]]))
 
     return result, accum, titles
 

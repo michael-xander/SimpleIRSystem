@@ -1,4 +1,7 @@
-import math
+# Calculates the AP for a query
+# Charles Du
+# 14th May, 2016
+
 def AP(accum, result, titles, fileNum, testBedName):
     queryNum = fileNum
     relevanceStr = open(testBedName+'/relevance.'+str(queryNum), 'r').read().replace("\n", "")
@@ -11,5 +14,4 @@ def AP(accum, result, titles, fileNum, testBedName):
         cumulativePrecision = cumulativePrecision + relevanceScore
         precision = cumulativePrecision/ (i+1)
         sumPrecisionAtN = sumPrecisionAtN + precision
-    #print("AP:"+str(totalPrecision/ len(result) ))
     return sumPrecisionAtN/ len(result)
