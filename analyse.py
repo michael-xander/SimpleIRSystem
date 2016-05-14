@@ -63,6 +63,6 @@ def main():
         NDCGScore = NDCG.NDCG(accum,result,titles, fileNum, testbed_name)
         print("\nAP:"+str(apScore)+"\nNDCG:"+str(NDCGScore))
 
-        fileNum = fileNum + 1;
+        fileNum = fileNum + 1
 if __name__ == '__main__':
     main()

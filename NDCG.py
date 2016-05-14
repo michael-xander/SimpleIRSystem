@@ -5,7 +5,7 @@ def NDCG(accum, result, titles, fileNum, testBedName):
     relevanceStr = open(testBedName+'/relevance.'+str(queryNum), 'r').read().replace("\n", "");
     #print(relevanceStr)
     dcg = []
-    relevanceScore = int(relevanceStr[int(result[0])])
+    relevanceScore = int(relevanceStr[int(result[0])-1])
     dcg.append(relevanceScore)
     for i in range (1,len (result)):
         
@@ -14,11 +14,12 @@ def NDCG(accum, result, titles, fileNum, testBedName):
     #    print ("{0:10.8f} {1:5} {2}".format (dcg[i], int(result[i]), titles[result[i]]))
     #print(dcg[len(result)-1])
     finalDCG = dcg[len(result)-1]
-    idcg = 0;
+
+    idcg = 0
     
     #basically this count array keeps track of the number 0s, 1s and 2s relevance score for the query, makes sorting so much 
     #easier since you can only have 3 different values.
-    count = [0,0,0];
+    count = [0,0,0]
     
     for i in range(len(result)):
         relevanceScore = int(relevanceStr[i])
