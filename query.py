@@ -168,7 +168,7 @@ def query(collection_name, given_query):
             df = words_df_counter[word]
             idf = 1/df
             if parameters.log_idf:
-                idf = math.log(1 + k/df)
+                idf = math.log(1 + num_relevant_docs/df)
             for document_id in words_tf_counter[word]:
                 tf = float(words_tf_counter[word][document_id])
                 if parameters.log_tf:
