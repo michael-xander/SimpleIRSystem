@@ -6,7 +6,8 @@ import re
 import math
 import sys
 import os
-
+import NDCG
+import ap
 import porter
 
 import parameters
@@ -88,5 +89,7 @@ for l in lengths:
 
 # print top ten results
 result = sorted (accum, key=accum.__getitem__, reverse=True)
-for i in range (min (len (result), 10)):
+for i in range (min (len (result), 10)): 
    print ("{0:10.8f} {1:5} {2}".format (accum[result[i]], result[i], titles[result[i]]))
+NDCG.NDCG(accum, result, titles)
+ap.AP(accum, result, titles)
