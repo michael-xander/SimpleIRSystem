@@ -17,7 +17,7 @@ if len(sys.argv)==1:
 collection = sys.argv[1]
 
 # read and parse input data - extract words, identifiers and titles
-f = open (collection, "r", encoding="utf8")
+f = open (collection, "r")
 identifier = ''
 document = ''
 title = ''
