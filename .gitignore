@@ -1,5 +1,10 @@
+# pycharm specific files
+.idea
+# python complied files
+__pycache__
 
-# watch only README and python files
-*
-!*.py
-!README.md
+# files generated on indexing
+*_index*
+
+# files generated on generating collections
+*_collection*
