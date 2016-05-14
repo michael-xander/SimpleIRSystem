@@ -132,7 +132,7 @@ def query(collection_name, given_query):
         print("Utilising blind relevance feedback")
 
         # obtain the IDs of the current top k documents
-        k = 10
+        k = parameters.number_top_k_documents
         num_relevant_docs = min(len(result), k)
         relevant_document_ids = []
         for i in range(num_relevant_docs):
@@ -184,7 +184,7 @@ def query(collection_name, given_query):
         ranked_words = sorted(word_stats, key=word_stats.__getitem__, reverse=True)
         print("Old query words:")
         print(query_words)
-        indicative_number = 20
+        indicative_number = parameters.number_indicative_terms
         for i in range(min(len(ranked_words), (indicative_number + len(query_words)))):
             if not ranked_words[i] in query_words:
                 query_words.append(ranked_words[i])

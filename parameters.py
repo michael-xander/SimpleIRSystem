@@ -8,5 +8,9 @@ case_folding = True
 log_tf = True
 use_idf = True
 log_idf = True
+
+# parameters specific to blind relevance feedback
 use_blind_relevance_feedback = True
 remove_stop_words = True
+number_indicative_terms = 20
+number_top_k_documents = 10
