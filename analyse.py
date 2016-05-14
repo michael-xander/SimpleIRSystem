@@ -6,6 +6,8 @@ import sys
 import glob
 import parameters
 import query
+import ap
+import NDCG
 
 # reads in the queries for a specific testbed
 def readin_testbed_queries(testbed_name):
@@ -40,7 +42,7 @@ def main():
         exit(0)
     testbed_name = sys.argv[1]
     queries = readin_testbed_queries(testbed_name)
-
+    fileNum = 1
     for query_sentence in queries:
         print()
         print('='*100)
@@ -50,11 +52,17 @@ def main():
         print('Analysing with unmodified engine')
         print()
         result, accum, titles = submit_query(testbed_name, query_sentence, False)
-        print()
+        apScore = ap.AP(accum,result,titles, fileNum, testbed_name)
+        NDCGScore = NDCG.NDCG(accum,result,titles, fileNum,testbed_name)
+        print("\nAP:"+str(apScore)+"\nNDCG:"+str(NDCGScore))
         print('*'*100)
         print('Analysing with modified engine')
         print()
         result, accum, titles = submit_query(testbed_name, query_sentence, True)
+        apScore  =ap.AP(accum,result,titles, fileNum, testbed_name)
+        NDCGScore = NDCG.NDCG(accum,result,titles, fileNum, testbed_name)
+        print("\nAP:"+str(apScore)+"\nNDCG:"+str(NDCGScore))
 
+        fileNum = fileNum + 1;
 if __name__ == '__main__':
     main()

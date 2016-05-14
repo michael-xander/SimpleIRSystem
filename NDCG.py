@@ -1,8 +1,8 @@
 import math
-def NDCG(accum, result, titles):
-    queryNum = "1"
-    print("NDCP Results:")
-    relevanceStr = open('testbed/relevance.'+queryNum, 'r').read().replace("\n", "");
+def NDCG(accum, result, titles, fileNum, testBedName):
+    queryNum = fileNum
+    #print("NDCP Results:")
+    relevanceStr = open(testBedName+'/relevance.'+str(queryNum), 'r').read().replace("\n", "");
     #print(relevanceStr)
     dcg = []
     relevanceScore = int(relevanceStr[int(result[0])])
@@ -11,8 +11,8 @@ def NDCG(accum, result, titles):
         
         relevanceScore = int(relevanceStr[int(result[i])-1])
         dcg.append(dcg[i-1] +relevanceScore/(math.log2(2+i)))
-        print ("{0:10.8f} {1:5} {2}".format (dcg[i], int(result[i]), titles[result[i]]))        
-    print(dcg[len(result)-1])
+    #    print ("{0:10.8f} {1:5} {2}".format (dcg[i], int(result[i]), titles[result[i]]))
+    #print(dcg[len(result)-1])
     finalDCG = dcg[len(result)-1]
     idcg = 0;
     
@@ -32,4 +32,5 @@ def NDCG(accum, result, titles):
             idcg = idcg + j/(math.log2(2+rank))
             rank = rank + 1
             
-    print('NDCG:' + str(finalDCG/idcg))
+    #print('NDCG:' + str(finalDCG/idcg))
+    return finalDCG/idcg
