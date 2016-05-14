@@ -3,19 +3,19 @@
 # 14th May, 2016
 
 import math
-def NDCG(result, query_num, testBedName):
+def NDCG(result, query_num, testBedName, num_docs_to_consider):
     relevance_str = open(testBedName+'/relevance.'+str(query_num), 'r').read().replace("\n", "")
     #print(relevance_str)
     dcg = []
     relevance_score = int(relevance_str[int(result[0])-1])
     dcg.append(relevance_score)
-    for i in range (1,len (result)):
-        
+    docs_num = min(len(result), num_docs_to_consider)
+    for i in range (1,docs_num):
         relevance_score = int(relevance_str[int(result[i])-1])
         dcg.append(dcg[i-1] +relevance_score/(math.log2(2+i)))
     #    print ("{0:10.8f} {1:5} {2}".format (dcg[i], int(result[i]), titles[result[i]]))
     #print(dcg[len(result)-1])
-    final_dcg = dcg[len(result)-1]
+    final_dcg = dcg[docs_num-1]
 
     idcg = 0
     
@@ -23,7 +23,7 @@ def NDCG(result, query_num, testBedName):
     #easier since you can only have 3 different values.
     count = [0,0,0]
     
-    for i in range(len(result)):
+    for i in range(docs_num):
         relevance_score = int(relevance_str[i])
         count[relevance_score] = count[relevance_score]+1
         
