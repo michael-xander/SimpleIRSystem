@@ -90,20 +90,10 @@ def do_query_search(query_words, collection_name, collection_size, collection_fi
 
     return accum, titles, lengths
 
-def main():
-    # check parameter for collection name
-    if len(sys.argv) < 3:
-        print("Syntax: query.py <collection> <query>")
-        exit(0)
+def query(collection_name, given_query):
 
-    # construct collection and query
-    collection = sys.argv[1]
-    query = ''
-    arg_index = 2
-    while arg_index < len(sys.argv):
-        query += sys.argv[arg_index] + ' '
-        arg_index += 1
-
+    collection = collection_name
+    query = given_query
     # clean query
     if parameters.case_folding:
         query = query.lower()
@@ -211,6 +201,25 @@ def main():
     for i in range(min(len(result), 10)):
         print("{0:10.8f} {1:5} {2}".format(accum[result[i]], result[i], titles[result[i]]))
 
+    return result, accum, titles
 
-# run the main method
-main()
+
+def main():
+    # check parameter for collection name
+    if len(sys.argv) < 3:
+        print("Syntax: query.py <collection> <query>")
+        exit(0)
+
+    # construct collection and query
+    collection = sys.argv[1]
+    query = ''
+    arg_index = 2
+    while arg_index < len(sys.argv):
+        query += sys.argv[arg_index] + ' '
+        arg_index += 1
+
+    query(collection, query)
+
+
+if __name__ == "__main__":
+    main()
