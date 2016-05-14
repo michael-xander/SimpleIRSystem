@@ -212,13 +212,13 @@ def main():
 
     # construct collection and query
     collection = sys.argv[1]
-    query = ''
+    query_words = ''
     arg_index = 2
     while arg_index < len(sys.argv):
-        query += sys.argv[arg_index] + ' '
+        query_words += sys.argv[arg_index] + ' '
         arg_index += 1
 
-    query(collection, query)
+    query(collection, query_words)
 
 
 if __name__ == "__main__":
