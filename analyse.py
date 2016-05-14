@@ -57,7 +57,7 @@ def main():
         # analysis using unmodified engine
         result, accum, titles = submit_query(testbed_name, query_sentence, False)
         ap_score = ap.AP(result, query_number, testbed_name)
-        ndcg_score = ndcg.NDCG(accum, result, titles, query_number, testbed_name)
+        ndcg_score = ndcg.NDCG(result, query_number, testbed_name)
         unmodified_engine_stats[query_number].append(ap_score)
         unmodified_engine_stats[query_number].append(ndcg_score)
         print('*'*100)
@@ -66,7 +66,7 @@ def main():
         # analysis using modified engine
         result, accum, titles = submit_query(testbed_name, query_sentence, True)
         ap_score  =ap.AP(result, query_number, testbed_name)
-        ndcg_score = ndcg.NDCG(accum, result, titles, query_number, testbed_name)
+        ndcg_score = ndcg.NDCG(result, query_number, testbed_name)
         modified_engine_stats[query_number].append(ap_score)
         modified_engine_stats[query_number].append(ndcg_score)
         print('*'*100)
