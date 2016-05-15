@@ -24,7 +24,7 @@ def NDCG(result, query_num, testBedName, num_docs_to_consider):
     count = [0,0,0]
     
     for i in range(docs_num):
-        relevance_score = int(relevance_str[i])
+        relevance_score = int(relevance_str[int(result[i])-1])
         count[relevance_score] = count[relevance_score]+1
         
     rank = 0 
@@ -33,6 +33,6 @@ def NDCG(result, query_num, testBedName, num_docs_to_consider):
         for i in range(count[j]):
             idcg = idcg + j/(math.log2(2+rank))
             rank = rank + 1
-            
+
     #print('NDCG:' + str(final_dcg/idcg))
     return final_dcg/idcg
