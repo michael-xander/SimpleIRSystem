@@ -18,6 +18,8 @@ def main():
 
     max_MAP = 0
     max_avg_NDCG = 0
+    optimal_indicative_terms = 0
+    optimal_top_k_documents = 0
     # test 1-50 indicative terms and top k documents
     for i in range(50):
         parameters.number_indicative_terms = i+1
@@ -40,6 +42,8 @@ def main():
             print('Number of docs to consider : ' + str(parameters.docs_to_consider))
             print('Number of indicative terms : ' + str(parameters.number_indicative_terms))
             print('Number of top k documents  : ' + str(parameters.number_top_k_documents))
+            print('Optimal indicative terms   : ' + str(optimal_indicative_terms))
+            print('Optimal top k documents    : ' + str(optimal_top_k_documents))
             print('+'*100)
             print('Calculated MAP             : ' + str(current_MAP))
             print('Calculated Average NDCG    : ' +  str(current_avg_NDCG))
@@ -50,9 +54,13 @@ def main():
             if (current_avg_NDCG + current_MAP) > (max_avg_NDCG + max_MAP):
                 max_MAP = current_MAP
                 max_avg_NDCG = current_avg_NDCG
+                optimal_indicative_terms = parameters.number_indicative_terms
+                optimal_top_k_documents = parameters.number_top_k_documents
     print('#'*100)
     print('Final max MAP     : ' + str(max_MAP))
     print('Final max Average : ' + str(max_avg_NDCG))
+    print('Optimal indicative terms : ' + str(optimal_indicative_terms))
+    print('Optimal top k documents  : ' + str(optimal_top_k_documents))
     print('#'*100)
 
 
