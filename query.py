@@ -184,10 +184,14 @@ def query(collection_name, given_query):
         ranked_words = sorted(word_stats, key=word_stats.__getitem__, reverse=True)
         #print("Old query words:")
         #print(query_words)
-        indicative_number = parameters.number_indicative_terms
-        for i in range(min(len(ranked_words), (indicative_number + len(query_words)))):
+        indicative_number = min(len(ranked_words), parameters.number_indicative_terms)
+        counter = 0
+        for i in range(len(ranked_words)):
+            if counter >= indicative_number:
+                break
             if not ranked_words[i] in query_words:
                 query_words.append(ranked_words[i])
+                counter += 1
 
         # do search again with new query words
         #print("New query words:")
