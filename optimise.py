@@ -79,7 +79,11 @@ def main():
     option = sys.argv[1]
     if option == '-a':
         parameters.docs_to_consider = int(sys.argv[2])
-        testbed_names = []
+        testbed_names = [
+            'testbed1', 'testbed2', 'testbed3', 'testbed4', 'testbed5',
+            'testbed6', 'testbed7', 'testbed8', 'testbed9', 'testbed11',
+            'testbed12', 'testbed13', 'testbed14', 'testbed15', 'testbed16'
+        ]
         indicative_terms, top_k_documents = all_testbeds_optimise(testbed_names)
         print('+'*100)
         print('Optimal indicative terms : ' + str(indicative_terms))
