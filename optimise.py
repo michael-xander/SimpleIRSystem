@@ -36,9 +36,9 @@ def all_testbeds_optimise(testbed_names):
 
     max_testbeds_MAP = 0
     max_testbeds_avg_NDCG = 0
-    for i in range(50):
+    for i in range(30):
         parameters.number_indicative_terms = i+1
-        for j in range(50):
+        for j in range(30):
             parameters.number_top_k_documents = j+1
             current_testbeds_MAP = 0
             current_testbeds_avg_NDCG = 0
@@ -99,9 +99,9 @@ def main():
         optimal_indicative_terms = 0
         optimal_top_k_documents = 0
         # test 1-50 indicative terms and top k documents
-        for i in range(50):
+        for i in range(30):
             parameters.number_indicative_terms = i+1
-            for j in range(50):
+            for j in range(30):
                 parameters.number_top_k_documents = j+1
                 current_MAP = 0
                 current_avg_NDCG = 0
