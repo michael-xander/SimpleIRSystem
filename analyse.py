@@ -6,6 +6,8 @@ import sys
 import glob
 import parameters
 import query
+import ap
+import ndcg
 
 # reads in the queries for a specific testbed
 def readin_testbed_queries(testbed_name):
@@ -41,20 +43,55 @@ def main():
     testbed_name = sys.argv[1]
     queries = readin_testbed_queries(testbed_name)
 
+    unmodified_engine_stats = {}
+    modified_engine_stats = {}
+    query_number = 1
+
+    # iterate through queries applying modified and unmodified search to obtain AP and NDCG values
     for query_sentence in queries:
+        unmodified_engine_stats[query_number] = []
+        modified_engine_stats[query_number] = []
         print()
         print('='*100)
-        print('Carrying out analyse for query : ' + query_sentence)
-        print()
-        print('*'*100)
-        print('Analysing with unmodified engine')
-        print()
+        print('Carrying out analysis for query : ' + query_sentence)
+        # analysis using unmodified engine
         result, accum, titles = submit_query(testbed_name, query_sentence, False)
-        print()
+        ap_score = ap.AP(result, query_number, testbed_name, parameters.docs_to_consider)
+        ndcg_score = ndcg.NDCG(result, query_number, testbed_name, parameters.docs_to_consider)
+        unmodified_engine_stats[query_number].append(ap_score)
+        unmodified_engine_stats[query_number].append(ndcg_score)
         print('*'*100)
-        print('Analysing with modified engine')
-        print()
+        print('Unmodified engine AP score   : ' + str(ap_score))
+        print('Unmodified engine NDCG score : ' + str(ndcg_score))
+        # analysis using modified engine
         result, accum, titles = submit_query(testbed_name, query_sentence, True)
+        ap_score  =ap.AP(result, query_number, testbed_name, parameters.docs_to_consider)
+        ndcg_score = ndcg.NDCG(result, query_number, testbed_name, parameters.docs_to_consider)
+        modified_engine_stats[query_number].append(ap_score)
+        modified_engine_stats[query_number].append(ndcg_score)
+        print('*'*100)
+        print('Modified engine AP score     : ' + str(ap_score))
+        print('Modified engine NDCG score   : ' + str(ndcg_score))
+        query_number += 1
+
+    query_number -= 1
+    # calculate MAP and average NDCG
+    unmodified_engine_cumulative_stats = [0,0]
+    modified_engine_cumulative_stats = [0,0]
+    for i in range(query_number):
+        unmodified_engine_cumulative_stats[0] += unmodified_engine_stats[i+1][0]
+        unmodified_engine_cumulative_stats[1] += unmodified_engine_stats[i+1][1]
+
+        modified_engine_cumulative_stats[0] += modified_engine_stats[i+1][0]
+        modified_engine_cumulative_stats[1] += modified_engine_stats[i+1][1]
+
+    print()
+    print("+"*100)
+    print('Unmodified engine MAP          : ' + str(unmodified_engine_cumulative_stats[0]/query_number))
+    print('Unmodified engine average NDCG : ' + str(unmodified_engine_cumulative_stats[1]/query_number))
+    print("*"*100)
+    print('Modified engine MAP            : ' + str(modified_engine_cumulative_stats[0]/query_number))
+    print('Modified engine average NDCG   : ' + str(modified_engine_cumulative_stats[1]/query_number))
 
 if __name__ == '__main__':
     main()
