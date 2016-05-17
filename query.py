@@ -138,6 +138,7 @@ def query(collection_name, given_query):
 
         # data structure to keep track of stemmed words in the relevant documents and the No. of documents they appear in
         accumulator = {}
+        word_idfs = {}
         for document_id in relevant_document_ids:
             f = open(collection + "_index_stem_count/"+ document_id, "r")
             lines = f.readlines()
@@ -149,38 +150,24 @@ def query(collection_name, given_query):
                     if parameters.remove_stop_words:
                         if word in stop_words:
                             continue
-                    count = float(mo.group(2))
-                    f = open(collection+"_index/"+word, "r")
-                    other_lines = f.readlines()
-                    f.close()
-                    idf = 1
-                    #if parameters.use_idf:
-                        #df = len(other_lines)
-                        #idf = 1/df
-                        #if parameters.log_idf:
-                            #idf = math.log(1 + N/df)
-                    tf = count
-                    #if parameters.log_tf:
-                        #tf = (1 + math.log(tf))
+                    tf = float(mo.group(2))
                     if not word in accumulator:
                         accumulator[word] = 0
-                    stat = (tf * idf)
+                        word_idfs[word] = 1
+                        if parameters.use_idf:
+                            f = open(collection+'_index/'+word, 'r')
+                            other_lines = f.readlines()
+                            f.close()
+                            df = len(other_lines)
+                            word_idfs[word] = 1/df
+                            if parameters.log_idf:
+                                word_idfs[word] = math.log(1 + N/df)
+                    if parameters.log_tf:
+                        tf = (1 + math.log(tf))
+                    stat = (tf * word_idfs[word])
                     if parameters.normalization:
                         stat = stat/lengths[document_id]
                     accumulator[word] += stat
-                    #for other_line in other_lines:
-                        #mo = re.match(r'([0-9]+)\:([0-9\.]+)', other_line)
-                        #if mo:
-                            #tf = float(mo.group(2))
-                            #if parameters.log_tf:
-                                #tf = (1 + math.log(tf))
-                            #if not word in accumulator:
-                                #accumulator[word] = 0
-                            #stat = (tf * idf)
-                            #if parameters.normalization:
-                                #stat = stat/lengths[document_id]
-                            #accumulator[word] += stat
-
 
         # rank the words found in the documents
         ranked_words = sorted(accumulator, key=accumulator.__getitem__, reverse=True)
