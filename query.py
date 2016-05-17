@@ -129,8 +129,6 @@ def query(collection_name, given_query):
     result = sorted(accum, key=accum.__getitem__, reverse=True)
 
     if parameters.use_blind_relevance_feedback:
-        #print("Utilising blind relevance feedback")
-
         # obtain the IDs of the current top k documents
         k = parameters.number_top_k_documents
         num_relevant_docs = min(len(result), k)
@@ -139,8 +137,7 @@ def query(collection_name, given_query):
             relevant_document_ids.append(result[i])
 
         # data structure to keep track of stemmed words in the relevant documents and the No. of documents they appear in
-        words_df_counter = {}
-        words_tf_counter = {}
+        accumulator = {}
         for document_id in relevant_document_ids:
             f = open(collection + "_index_stem_count/"+ document_id, "r")
             lines = f.readlines()
@@ -149,39 +146,35 @@ def query(collection_name, given_query):
                 mo = re.match(r'([a-z0-9]+)\:([0-9\.]+)', line)
                 if mo:
                     word = mo.group(1)
+                    if parameters.remove_stop_words:
+                        if word in stop_words:
+                            continue
                     count = eval(mo.group(2))
+                    f = open(collection+"_index/"+word, "r")
+                    other_lines = f.readlines()
+                    f.close()
+                    idf = 1
+                    if parameters.use_idf:
+                        df = len(other_lines)
+                        idf = 1/df
+                        if parameters.log_idf:
+                            idf = math.log(1 + N/df)
+                    for other_line in other_lines:
+                        mo = re.match(r'([0-9]+)\:([0-9\.]+)', other_line)
+                        if mo:
+                            tf = float(mo.group(2))
+                            if parameters.log_tf:
+                                tf = (1 + math.log(tf))
+                            if not word in accumulator:
+                                accumulator[word] = 0
+                            stat = (tf * idf)
+                            if parameters.normalization:
+                                stat = stat/lengths[document_id]
+                            accumulator[word] += stat
 
-                    if not word in words_tf_counter:
-                        words_tf_counter[word] = {}
-                    words_tf_counter[word][document_id] = count
-
-                    if not word in words_df_counter:
-                        words_df_counter[word] = 0
-                    words_df_counter[word] += 1
-
-        # data structure to contain stats on words
-        word_stats = {}
-        for word in words_df_counter:
-            if parameters.remove_stop_words:
-                if word in stop_words:
-                    continue
-            df = words_df_counter[word]
-            idf = 1/df
-            if parameters.log_idf:
-                idf = math.log(1 + num_relevant_docs/df)
-            for document_id in words_tf_counter[word]:
-                tf = float(words_tf_counter[word][document_id])
-                if parameters.log_tf:
-                    tf = (1 + math.log(tf))
-                if not word in word_stats:
-                    word_stats[word] = 0
-                stat = (tf * idf)
-                if parameters.normalization:
-                    stat = stat / lengths[document_id]
-                word_stats[word] += stat
 
         # rank the words found in the documents
-        ranked_words = sorted(word_stats, key=word_stats.__getitem__, reverse=True)
+        ranked_words = sorted(accumulator, key=accumulator.__getitem__, reverse=True)
         #print("Old query words:")
         #print(query_words)
         indicative_number = min(len(ranked_words), parameters.number_indicative_terms)
@@ -201,10 +194,6 @@ def query(collection_name, given_query):
         # rank the results
         result = sorted(accum, key=accum.__getitem__, reverse=True)
 
-    # print the ranked results
-    #for i in range(min(len(result), 10)):
-        #print("{0:10.8f} {1:5} {2}".format(accum[result[i]], result[i], titles[result[i]]))
-
     return result, accum, titles
 
 
@@ -222,7 +211,11 @@ def main():
         query_words += sys.argv[arg_index] + ' '
         arg_index += 1
 
-    query(collection, query_words)
+    result, accum, titles = query(collection, query_words)
+    # print the ranked results
+    for i in range(min(len(result), 10)):
+        print("{0:10.8f} {1:5} {2}".format(accum[result[i]], result[i], titles[result[i]]))
+
 
 
 if __name__ == "__main__":
