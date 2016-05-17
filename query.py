@@ -149,28 +149,37 @@ def query(collection_name, given_query):
                     if parameters.remove_stop_words:
                         if word in stop_words:
                             continue
-                    count = eval(mo.group(2))
+                    count = float(mo.group(2))
                     f = open(collection+"_index/"+word, "r")
                     other_lines = f.readlines()
                     f.close()
                     idf = 1
-                    if parameters.use_idf:
-                        df = len(other_lines)
-                        idf = 1/df
-                        if parameters.log_idf:
-                            idf = math.log(1 + N/df)
-                    for other_line in other_lines:
-                        mo = re.match(r'([0-9]+)\:([0-9\.]+)', other_line)
-                        if mo:
-                            tf = float(mo.group(2))
-                            if parameters.log_tf:
-                                tf = (1 + math.log(tf))
-                            if not word in accumulator:
-                                accumulator[word] = 0
-                            stat = (tf * idf)
-                            if parameters.normalization:
-                                stat = stat/lengths[document_id]
-                            accumulator[word] += stat
+                    #if parameters.use_idf:
+                        #df = len(other_lines)
+                        #idf = 1/df
+                        #if parameters.log_idf:
+                            #idf = math.log(1 + N/df)
+                    tf = count
+                    #if parameters.log_tf:
+                        #tf = (1 + math.log(tf))
+                    if not word in accumulator:
+                        accumulator[word] = 0
+                    stat = (tf * idf)
+                    if parameters.normalization:
+                        stat = stat/lengths[document_id]
+                    accumulator[word] += stat
+                    #for other_line in other_lines:
+                        #mo = re.match(r'([0-9]+)\:([0-9\.]+)', other_line)
+                        #if mo:
+                            #tf = float(mo.group(2))
+                            #if parameters.log_tf:
+                                #tf = (1 + math.log(tf))
+                            #if not word in accumulator:
+                                #accumulator[word] = 0
+                            #stat = (tf * idf)
+                            #if parameters.normalization:
+                                #stat = stat/lengths[document_id]
+                            #accumulator[word] += stat
 
 
         # rank the words found in the documents
