@@ -44,6 +44,7 @@ def all_testbeds_optimise(testbed_names):
             current_testbeds_avg_NDCG = 0
             # cumulate the testbeds' MAP and avg NDCG scores
             for testbed_name in testbed_queries:
+                print('Analysing testbed : ' + testbed_name)
                 testbed_MAP, testbed_avg_NDCG = get_testbed_stats(testbed_name, testbed_queries[testbed_name])
                 current_testbeds_MAP += testbed_MAP
                 current_testbeds_avg_NDCG += testbed_avg_NDCG
