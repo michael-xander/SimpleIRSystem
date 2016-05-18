@@ -61,8 +61,8 @@ def main():
         unmodified_engine_stats[query_number].append(ap_score)
         unmodified_engine_stats[query_number].append(ndcg_score)
         print('*'*100)
-        #print('Unmodified engine AP score   : ' + str(ap_score))
-        #print('Unmodified engine NDCG score : ' + str(ndcg_score))
+        print('Unmodified engine AP score   : ' + str(ap_score))
+        print('Unmodified engine NDCG score : ' + str(ndcg_score))
         # analysis using modified engine
         result, accum, titles = submit_query(testbed_name, query_sentence, True)
         ap_score  =ap.AP(result, query_number, testbed_name, parameters.docs_to_consider)
@@ -70,8 +70,8 @@ def main():
         modified_engine_stats[query_number].append(ap_score)
         modified_engine_stats[query_number].append(ndcg_score)
         print('*'*100)
-        #print('Modified engine AP score     : ' + str(ap_score))
-        #print('Modified engine NDCG score   : ' + str(ndcg_score))
+        print('Modified engine AP score     : ' + str(ap_score))
+        print('Modified engine NDCG score   : ' + str(ndcg_score))
         query_number += 1
 
     query_number -= 1
