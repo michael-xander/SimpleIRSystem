@@ -17,7 +17,7 @@ if len(sys.argv)==1:
 collection = sys.argv[1]
 
 # read and parse input data - extract words, identifiers and titles
-f = open (collection, "r")
+f = open (collection, "r", encoding='utf-8')
 identifier = ''
 document = ''
 title = ''
@@ -56,7 +56,7 @@ for line in f:
 f.close ()
 
 # document length/title file
-g = open (collection + "_index_len", "w")
+g = open (collection + "_index_len", "w", encoding='utf-8')
 
 # create inverted files in memory and save titles/N to file
 index = {}
@@ -93,7 +93,7 @@ except:
 for stemmed_word in index:
     for file_id in index[stemmed_word]:
         # append the stem count to the respective ID file
-        f = open (collection+"_index_stem_count/"+file_id, "a")
+        f = open (collection+"_index_stem_count/"+file_id, "a", encoding='utf-8')
         print(stemmed_word, index[stemmed_word][file_id], sep=':', file=f)
         f.close()
 
@@ -103,13 +103,13 @@ try:
 except:
    pass
 for key in index:
-    f = open (collection+"_index/"+key, "w")
+    f = open (collection+"_index/"+key, "w", encoding='utf-8')
     for entry in index[key]:
         print (entry, index[key][entry], sep=':', file=f)
     f.close ()
 
 # write N
-f = open (collection+"_index_N", "w")
+f = open (collection+"_index_N", "w", encoding='utf-8')
 print (N, file=f)
 f.close ()
     

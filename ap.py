@@ -3,7 +3,7 @@
 # 14th May, 2016
 
 def AP(result, query_num, testbed_name, num_docs_to_consider):
-    relevance_str = open(testbed_name + '/relevance.' + str(query_num), 'r').read().replace("\n", "")
+    relevance_str = open(testbed_name + '/relevance.' + str(query_num), 'r', encoding='utf-8').read().replace("\n", "")
     cumulative_precision = 0
     sum_precision_at_N = 0
     docs_num = min(len(result), num_docs_to_consider)

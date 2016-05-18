@@ -18,7 +18,7 @@ def search_index(search_words, collection, N):
         if word != '':
             if not os.path.isfile(collection+"_index/"+word):
                 continue
-            f = open(collection+"_index/"+word, "r")
+            f = open(collection+"_index/"+word, "r", encoding='utf-8')
             lines = f.readlines()
             idf = 1
             if parameters.use_idf:
@@ -58,7 +58,7 @@ def stem_terms(terms):
 # read in the stop words
 def readin_stop_words():
     stop_words = []
-    f = open("stop-word-list.txt", "r")
+    f = open("stop-word-list.txt", "r", encoding='utf-8')
     lines = f.readlines()
     f.close()
     for line in lines:
@@ -115,11 +115,11 @@ def query(collection_name, given_query):
         query_words = temp_arr
 
     # get N
-    f = open(collection + "_index_N", "r")
+    f = open(collection + "_index_N", "r", encoding='utf-8')
     N = eval(f.read())
     f.close()
 
-    f = open(collection + "_index_len", "r")
+    f = open(collection + "_index_len", "r", encoding='utf-8')
     file_data_list = f.readlines()
     f.close()
 
@@ -140,7 +140,7 @@ def query(collection_name, given_query):
         accumulator = {}
         word_idfs = {}
         for document_id in relevant_document_ids:
-            f = open(collection + "_index_stem_count/"+ document_id, "r")
+            f = open(collection + "_index_stem_count/"+ document_id, "r", encoding='utf-8')
             lines = f.readlines()
             f.close()
             for line in lines:
@@ -155,7 +155,7 @@ def query(collection_name, given_query):
                         accumulator[word] = 0
                         word_idfs[word] = 1
                         if parameters.use_idf:
-                            f = open(collection+'_index/'+word, 'r')
+                            f = open(collection+'_index/'+word, 'r', encoding='utf-8')
                             other_lines = f.readlines()
                             f.close()
                             df = len(other_lines)

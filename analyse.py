@@ -15,7 +15,7 @@ def readin_testbed_queries(testbed_name):
     queries = []
 
     for query_file_name in query_file_names:
-        f = open(query_file_name, "r")
+        f = open(query_file_name, "r", encoding='utf-8')
         lines = f.readlines()
         f.close()
         for line in lines:

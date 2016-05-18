@@ -4,7 +4,7 @@
 
 import math
 def NDCG(result, query_num, testBedName, num_docs_to_consider):
-    relevance_str = open(testBedName+'/relevance.'+str(query_num), 'r').read().replace("\n", "")
+    relevance_str = open(testBedName+'/relevance.'+str(query_num), 'r', encoding='utf-8').read().replace("\n", "")
     #print(relevance_str)
     dcg = []
     relevance_score = int(relevance_str[int(result[0])-1])
