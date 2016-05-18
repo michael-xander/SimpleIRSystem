@@ -14,7 +14,6 @@ use_blind_relevance_feedback = True
 remove_stop_words = True
 number_indicative_terms = 20
 number_top_k_documents = 10
-length_modifier = True
 
 # parameters specific to MAP and NDCG analysis
 docs_to_consider = 200
