@@ -165,14 +165,11 @@ def query(collection_name, given_query):
                     if parameters.log_tf:
                         tf = (1 + math.log(tf))
                     stat = (tf * word_idfs[word])
-                    #if parameters.normalization:
                     stat = stat/lengths[document_id]
                     accumulator[word] += stat
 
         # rank the words found in the documents
         ranked_words = sorted(accumulator, key=accumulator.__getitem__, reverse=True)
-        #print("Old query words:")
-        #print(query_words)
         indicative_number = min(len(ranked_words), parameters.number_indicative_terms)
         counter = 0
         for i in range(len(ranked_words)):
@@ -183,8 +180,6 @@ def query(collection_name, given_query):
                 counter += 1
 
         # do search again with new query words
-        #print("New query words:")
-        #print(query_words)
         accum, titles, lengths = do_query_search(query_words, collection, N, file_data_list)
 
         # rank the results
