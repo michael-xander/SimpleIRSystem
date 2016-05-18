@@ -28,13 +28,9 @@ def submit_query(testbed_name, query_sentence, use_modified_engine):
     if use_modified_engine:
         parameters.use_blind_relevance_feedback = True
         parameters.remove_stop_words = True
-        parameters.log_tf = False
-        parameters.log_idf = False
     else:
         parameters.use_blind_relevance_feedback = False
         parameters.remove_stop_words = False
-        parameters.log_idf = True
-        parameters.log_tf = True
 
     result, accum, titles = query.query((testbed_name + "_collection"), query_sentence)
     return result, accum, titles
@@ -65,8 +61,8 @@ def main():
         unmodified_engine_stats[query_number].append(ap_score)
         unmodified_engine_stats[query_number].append(ndcg_score)
         print('*'*100)
-        print('Unmodified engine AP score   : ' + str(ap_score))
-        print('Unmodified engine NDCG score : ' + str(ndcg_score))
+        #print('Unmodified engine AP score   : ' + str(ap_score))
+        #print('Unmodified engine NDCG score : ' + str(ndcg_score))
         # analysis using modified engine
         result, accum, titles = submit_query(testbed_name, query_sentence, True)
         ap_score  =ap.AP(result, query_number, testbed_name, parameters.docs_to_consider)
@@ -74,8 +70,8 @@ def main():
         modified_engine_stats[query_number].append(ap_score)
         modified_engine_stats[query_number].append(ndcg_score)
         print('*'*100)
-        print('Modified engine AP score     : ' + str(ap_score))
-        print('Modified engine NDCG score   : ' + str(ndcg_score))
+        #print('Modified engine AP score     : ' + str(ap_score))
+        #print('Modified engine NDCG score   : ' + str(ndcg_score))
         query_number += 1
 
     query_number -= 1
