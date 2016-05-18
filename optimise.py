@@ -7,6 +7,7 @@ import parameters
 import analyse
 import ap
 import ndcg
+import time
 # get the MAP and avg NDCG for a testbed
 def get_testbed_stats(testbed_name, queries):
     MAP = 0
@@ -36,14 +37,16 @@ def all_testbeds_optimise(testbed_names):
 
     max_testbeds_MAP = 0
     max_testbeds_avg_NDCG = 0
-    for i in range(30):
+    for i in range(20):
         parameters.number_indicative_terms = i+1
-        for j in range(30):
+        for j in range(20):
             parameters.number_top_k_documents = j+1
             current_testbeds_MAP = 0
             current_testbeds_avg_NDCG = 0
             # cumulate the testbeds' MAP and avg NDCG scores
             for testbed_name in testbed_queries:
+                localtime = time.asctime( time.localtime(time.time()))
+                print("Time :", localtime)
                 print('Analysing testbed : ' + testbed_name)
                 testbed_MAP, testbed_avg_NDCG = get_testbed_stats(testbed_name, testbed_queries[testbed_name])
                 current_testbeds_MAP += testbed_MAP

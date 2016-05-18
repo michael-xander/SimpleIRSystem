@@ -59,17 +59,14 @@ can
 cannot
 cant
 co
-computer
 con
 could
 couldnt
 cry
 de
-describe
 detail
 do
 done
-down
 due
 during
 each
@@ -104,10 +101,8 @@ forty
 found
 four
 from
-front
 full
 further
-get
 give
 go
 had
@@ -138,7 +133,6 @@ inc
 indeed
 interest
 into
-is
 it
 its
 itself
@@ -149,7 +143,6 @@ latterly
 least
 less
 ltd
-made
 many
 may
 me
@@ -159,9 +152,7 @@ mill
 mine
 more
 moreover
-most
 mostly
-move
 much
 must
 my
@@ -189,7 +180,6 @@ on
 once
 one
 only
-onto
 or
 other
 others
@@ -200,8 +190,6 @@ ourselves
 out
 over
 own
-part
-per
 perhaps
 please
 put
@@ -233,7 +221,6 @@ sometimes
 somewhere
 still
 such
-system
 take
 ten
 than
@@ -266,7 +253,6 @@ thus
 to
 together
 too
-top
 toward
 towards
 twelve
@@ -275,16 +261,13 @@ two
 un
 under
 until
-up
 upon
-us
 very
 via
 was
 we
 well
 were
-what
 whatever
 when
 whence

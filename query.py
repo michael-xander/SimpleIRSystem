@@ -86,7 +86,10 @@ def do_query_search(query_words, collection_name, collection_size, collection_fi
     # normalise if option is true
     if parameters.normalization:
         for document_id in accum:
-            accum[document_id] = accum[document_id] / lengths[document_id]
+            value = lengths[document_id]
+            if parameters.use_blind_relevance_feedback and parameters.length_modifier:
+                value = math.pow(value, 0.8)
+            accum[document_id] = accum[document_id] / value
 
     return accum, titles, lengths
 
