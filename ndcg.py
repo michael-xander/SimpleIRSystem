@@ -4,8 +4,12 @@
 
 import math
 def NDCG(result, query_num, testBedName, num_docs_to_consider):
-    relevance_str = open(testBedName+'/relevance.'+str(query_num), 'r', encoding='utf-8').read().replace("\n", "")
-    #print(relevance_str)
+    f = open(testBedName+'/relevance.'+str(query_num), 'r', encoding='utf-8')
+    lines = f.readlines()
+    f.close()
+    relevance_str = ''
+    for line in lines:
+        relevance_str += (line.strip())
     dcg = []
     relevance_score = int(relevance_str[int(result[0])-1])
     dcg.append(relevance_score)
@@ -13,8 +17,6 @@ def NDCG(result, query_num, testBedName, num_docs_to_consider):
     for i in range (1,docs_num):
         relevance_score = int(relevance_str[int(result[i])-1])
         dcg.append(dcg[i-1] +relevance_score/(math.log2(2+i)))
-    #    print ("{0:10.8f} {1:5} {2}".format (dcg[i], int(result[i]), titles[result[i]]))
-    #print(dcg[len(result)-1])
     final_dcg = dcg[docs_num-1]
 
     idcg = 0
@@ -34,5 +36,4 @@ def NDCG(result, query_num, testBedName, num_docs_to_consider):
             idcg = idcg + j/(math.log2(2+rank))
             rank = rank + 1
 
-    #print('NDCG:' + str(final_dcg/idcg))
     return final_dcg/idcg
