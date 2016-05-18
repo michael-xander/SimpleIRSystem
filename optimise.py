@@ -39,9 +39,9 @@ def all_testbeds_optimise(testbed_names):
 
     max_testbeds_MAP = 0
     max_testbeds_avg_NDCG = 0
-    for i in range(20):
+    for i in range(10):
         parameters.number_indicative_terms = i+1
-        for j in range(20):
+        for j in range(10):
             parameters.number_top_k_documents = j+1
             current_testbeds_MAP = 0
             current_testbeds_avg_NDCG = 0
