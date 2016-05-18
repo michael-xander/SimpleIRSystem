@@ -13,9 +13,11 @@ def get_testbed_stats(testbed_name, queries):
     MAP = 0
     avg_NDCG = 0
     # get AP and NDCG score for each query
-    for query in queries:
+    for query_file_name in queries:
+        query = queries[query_file_name]
         result, accum, titles = analyse.submit_query(testbed_name, query, True)
-        query_number = queries.index(query)+1
+        temp_arr = query_file_name.split('.')
+        query_number = temp_arr[1]
         ap_score = ap.AP(result, query_number, testbed_name, parameters.docs_to_consider)
         ndcg_score = ndcg.NDCG(result, query_number, testbed_name, parameters.docs_to_consider)
         MAP += ap_score

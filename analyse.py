@@ -11,16 +11,18 @@ import ndcg
 
 # reads in the queries for a specific testbed
 def readin_testbed_queries(testbed_name):
-    query_file_names = glob.glob(testbed_name + "/query*")
-    queries = []
+    query_file_numbers = [1,2,3,4,5]
+    queries = {}
 
-    for query_file_name in query_file_names:
-        f = open(query_file_name, "r", encoding='utf-8')
+    for query_file_number in query_file_numbers:
+        query_file_name = testbed_name + '/query.' + str(query_file_number)
+        f = open(query_file_name, 'r', encoding='utf-8')
         lines = f.readlines()
         f.close()
         for line in lines:
             line = line.rstrip()
-            queries.append(line)
+            queries[query_file_name] = line
+
     return queries
 
 # submit query for given testbed, adjusting on whether to use the modified engine or not
@@ -45,14 +47,14 @@ def main():
     testbed_name = sys.argv[1]
     queries = readin_testbed_queries(testbed_name)
 
-    unmodified_engine_stats = {}
-    modified_engine_stats = {}
-    query_number = 1
-
+    stats = {}
+    stats['unmodified'] = {'map': 0, 'avg_ndcg' : 0}
+    stats['modified']   = {'map': 0, 'avg_ndcg' : 0}
     # iterate through queries applying modified and unmodified search to obtain AP and NDCG values
-    for query_sentence in queries:
-        unmodified_engine_stats[query_number] = []
-        modified_engine_stats[query_number] = []
+    for query_file_name in queries:
+        query_sentence = queries[query_file_name]
+        temp_arr = query_file_name.split('.')
+        query_number = temp_arr[1]
         print()
         print('='*100)
         print('Carrying out analysis for query : ' + query_sentence)
@@ -60,8 +62,8 @@ def main():
         result, accum, titles = submit_query(testbed_name, query_sentence, False)
         ap_score = ap.AP(result, query_number, testbed_name, parameters.docs_to_consider)
         ndcg_score = ndcg.NDCG(result, query_number, testbed_name, parameters.docs_to_consider)
-        unmodified_engine_stats[query_number].append(ap_score)
-        unmodified_engine_stats[query_number].append(ndcg_score)
+        stats['unmodified']['map'] += ap_score
+        stats['unmodified']['avg_ndcg'] += ndcg_score
         print('*'*100)
         print('Unmodified engine AP score   : ' + str(ap_score))
         print('Unmodified engine NDCG score : ' + str(ndcg_score))
@@ -69,31 +71,26 @@ def main():
         result, accum, titles = submit_query(testbed_name, query_sentence, True)
         ap_score  =ap.AP(result, query_number, testbed_name, parameters.docs_to_consider)
         ndcg_score = ndcg.NDCG(result, query_number, testbed_name, parameters.docs_to_consider)
-        modified_engine_stats[query_number].append(ap_score)
-        modified_engine_stats[query_number].append(ndcg_score)
+        stats['modified']['map'] += ap_score
+        stats['modified']['avg_ndcg'] += ndcg_score
         print('*'*100)
         print('Modified engine AP score     : ' + str(ap_score))
         print('Modified engine NDCG score   : ' + str(ndcg_score))
-        query_number += 1
 
-    query_number -= 1
     # calculate MAP and average NDCG
-    unmodified_engine_cumulative_stats = [0,0]
-    modified_engine_cumulative_stats = [0,0]
-    for i in range(query_number):
-        unmodified_engine_cumulative_stats[0] += unmodified_engine_stats[i+1][0]
-        unmodified_engine_cumulative_stats[1] += unmodified_engine_stats[i+1][1]
-
-        modified_engine_cumulative_stats[0] += modified_engine_stats[i+1][0]
-        modified_engine_cumulative_stats[1] += modified_engine_stats[i+1][1]
+    num_queries = len(queries)
+    stats['unmodified']['map'] = stats['unmodified']['map']/num_queries
+    stats['unmodified']['avg_ndcg'] = stats['unmodified']['avg_ndcg']/num_queries
+    stats['modified']['map'] = stats['modified']['map']/num_queries
+    stats['modified']['avg_ndcg'] = stats['modified']['avg_ndcg']/num_queries
 
     print()
     print("+"*100)
-    print('Unmodified engine MAP          : ' + str(unmodified_engine_cumulative_stats[0]/query_number))
-    print('Unmodified engine average NDCG : ' + str(unmodified_engine_cumulative_stats[1]/query_number))
+    print('Unmodified engine MAP          : ' + str(stats['unmodified']['map']))
+    print('Unmodified engine average NDCG : ' + str(stats['unmodified']['avg_ndcg']))
     print("*"*100)
-    print('Modified engine MAP            : ' + str(modified_engine_cumulative_stats[0]/query_number))
-    print('Modified engine average NDCG   : ' + str(modified_engine_cumulative_stats[1]/query_number))
+    print('Modified engine MAP            : ' + str(stats['modified']['map']))
+    print('Modified engine average NDCG   : ' + str(stats['modified']['avg_ndcg']))
 
 if __name__ == '__main__':
     main()
