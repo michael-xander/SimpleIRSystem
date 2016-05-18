@@ -28,9 +28,11 @@ def submit_query(testbed_name, query_sentence, use_modified_engine):
     if use_modified_engine:
         parameters.use_blind_relevance_feedback = True
         parameters.remove_stop_words = True
+        parameters.normalization = False
     else:
         parameters.use_blind_relevance_feedback = False
         parameters.remove_stop_words = False
+        parameters.normalization = True
 
     result, accum, titles = query.query((testbed_name + "_collection"), query_sentence)
     return result, accum, titles

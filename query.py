@@ -101,9 +101,6 @@ def query(collection_name, given_query):
     query = re.sub(r'\s+', ' ', query)
     query_words = query.split(' ')
 
-    if parameters.stemming:
-        query_words = stem_terms(query_words)
-
     # get list of stop words
     stop_words = readin_stop_words()
 
@@ -113,6 +110,9 @@ def query(collection_name, given_query):
             if not word in stop_words:
                 temp_arr.append(word)
         query_words = temp_arr
+
+    if parameters.stemming:
+        query_words = stem_terms(query_words)
 
     # get N
     f = open(collection + "_index_N", "r", encoding='utf-8')
@@ -165,8 +165,8 @@ def query(collection_name, given_query):
                     if parameters.log_tf:
                         tf = (1 + math.log(tf))
                     stat = (tf * word_idfs[word])
-                    if parameters.normalization:
-                        stat = stat/lengths[document_id]
+                    #if parameters.normalization:
+                    stat = stat/lengths[document_id]
                     accumulator[word] += stat
 
         # rank the words found in the documents
