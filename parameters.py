@@ -12,8 +12,8 @@ log_idf = True
 # parameters specific to blind relevance feedback
 use_blind_relevance_feedback = True
 remove_stop_words = True
-number_indicative_terms = 20
-number_top_k_documents = 10
+number_indicative_terms = 1
+number_top_k_documents = 3
 
 # parameters specific to MAP and NDCG analysis
 docs_to_consider = 200
