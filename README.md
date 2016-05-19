@@ -17,7 +17,7 @@ To utilise this system you need to generate a collection from a testbed, index t
  - analyse modified and unmodified engine performance
    - ```python analyse.py testbedx```
  - finding optimal indicative terms and top k documents to utilise for blind relevance feedback (BRF) for a single testbed
-   - ```python optimise.py -s testbedx 200``` 200 being the number of documents to consider in MAP/Avg NDCG calculations
+   - ```python optimise.py -s testbedx 200``` - 200 being the number of documents to consider in MAP/Avg NDCG calculations
  - finding optimal indicative terms and top k documents to utilise for BRF for all testbeds
    - ```python optimise.py -a 200```
 
