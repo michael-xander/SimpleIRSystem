@@ -2,7 +2,7 @@
 # Hussein Suleman
 # 21 April 2016
 
-normalization = True
+normalization = False
 stemming = True
 case_folding = True
 log_tf = True
