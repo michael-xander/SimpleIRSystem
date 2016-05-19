@@ -31,9 +31,11 @@ def NDCG(result, query_num, testBedName, num_docs_to_consider):
         
     rank = 0 
     for j in range(2, -1, -1) :
-        #print (j)
         for i in range(count[j]):
             idcg = idcg + j/(math.log2(2+rank))
             rank = rank + 1
+    # assumption is that if dcg == 0 == idcg, ndcg = 1 but MAP will be 0 showing that results were irrelevant
+    if(final_dcg == idcg):
+        return 1
 
     return final_dcg/idcg
